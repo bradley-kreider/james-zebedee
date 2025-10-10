@@ -1,5 +1,7 @@
 const { test, expect } = require("@playwright/test");
 
+
+//test 1
 test("page loads and has an H1", async ({ page }, testInfo) => {
     await page.goto("/");
 
@@ -13,3 +15,4 @@ test("page loads and has an H1", async ({ page }, testInfo) => {
         fullPage: true
     });
 });
+
