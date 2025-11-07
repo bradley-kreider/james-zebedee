@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Bible Vision API Layout (Header + Nav + Main)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="favicon.ico" />
+    <link rel="stylesheet" href="/style.css" />
+    <script src="/api-logic.js" defer></script>
+  </head>
+  <body class="min-h-screen bg-gray-50 text-gray-900 flex flex-col">
+    <!-- Header on top -->
+    <header class="border-b bg-blue-200 flex-none">
+      <div class="px-4 py-3">
+        <h1 class="text-xl font-semibold">Bible Vision API Explorer</h1>
+        <p class="text-sm text-gray-600">All requests are GET and return JSON.</p>
+      </div>
+    </header>
+
+    <!-- Two columns beneath header -->
+    <div class="flex-1 flex overflow-hidden min-h-0">
+      <!-- Left column: fixed width; scrolls independently -->
+      <nav class="w-120 shrink-0 border-r bg-green-100 p-4 overflow-y-auto">
+        <!-- Quick calls -->
+        <section class="space-y-2">
+          <h2 class="text-xs font-semibold uppercase tracking-wide text-gray-600">Quick calls</h2>
+          <div class="grid grid-cols-2 gap-2">
+            <button id="btnHealth" class="px-3 py-2 rounded bg-blue-700 text-white">
+              /api/health
+            </button>
+            <button id="btnBooks" class="px-3 py-2 rounded bg-blue-700 text-white">
+              /api/books
+            </button>
+            <button id="btnFiles" class="px-3 py-2 rounded bg-blue-700 text-white">
+              /api/files
+            </button>
+            <button id="btnStats" class="px-3 py-2 rounded bg-blue-700 text-white">
+              /api/stats
+            </button>
+          </div>
+        </section>
+
+        <!-- Inputs -->
+        <section class="space-y-2">
+          <h2 class="text-xs font-semibold uppercase tracking-wide text-gray-600">Inputs</h2>
+
+          <label for="bookSel" class="text-sm text-gray-700">Book code</label>
+          <select id="bookSel" class="w-full rounded border border-gray-300 p-2 text-sm">
+            <option value="">(none)</option>
+          </select>
+
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label for="chapterInp" class="text-sm text-gray-700">Chapter</label>
+              <input
+                id="chapterInp"
+                type="number"
+                min="1"
+                step="1"
+                placeholder="1"
+                class="w-full rounded border border-gray-300 p-2 text-sm"
+              />
+            </div>
+            <div>
+              <label for="verseInp" class="text-sm text-gray-700">Verse</label>
+              <input
+                id="verseInp"
+                type="number"
+                min="1"
+                step="1"
+                placeholder="1"
+                class="w-full rounded border border-gray-300 p-2 text-sm"
+              />
+            </div>
+          </div>
+
+          <label for="qInp" class="text-sm text-gray-700">Search q</label>
+          <input
+            id="qInp"
+            type="text"
+            placeholder="light"
+            class="w-full rounded border border-gray-300 p-2 text-sm"
+          />
+
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label for="limitInp" class="text-sm text-gray-700">Limit</label>
+              <input
+                id="limitInp"
+                type="number"
+                min="1"
+                step="1"
+                placeholder="25"
+                class="w-full rounded border border-gray-300 p-2 text-sm"
+              />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label for="fromInp" class="text-sm text-gray-700">From</label>
+              <input
+                id="fromInp"
+                type="number"
+                min="1"
+                step="1"
+                placeholder="1"
+                class="w-full rounded border border-gray-300 p-2 text-sm"
+              />
+            </div>
+            <div>
+              <label for="toInp" class="text-sm text-gray-700">To</label>
+              <input
+                id="toInp"
+                type="number"
+                min="1"
+                step="1"
+                placeholder="3"
+                class="w-full rounded border border-gray-300 p-2 text-sm"
+              />
+            </div>
+          </div>
+        </section>
+
+        <!-- Book-level -->
+        <section class="space-y-2">
+          <h2 class="text-xs font-semibold uppercase tracking-wide text-gray-600">Book-level</h2>
+          <div class="grid grid-cols-2 gap-2">
+            <button
+              id="btnBookChapters"
+              class="px-3 py-2 rounded border border-blue-700 text-blue-700 bg-white"
+            >
+              /api/book/chapters
+            </button>
+            <button
+              id="btnBookMeta"
+              class="px-3 py-2 rounded border border-blue-700 text-blue-700 bg-white"
+            >
+              /api/book/meta
+            </button>
+          </div>
+        </section>
+
+        <!-- Chapter-level -->
+        <section class="space-y-2">
+          <h2 class="text-xs font-semibold uppercase tracking-wide text-gray-600">Chapter-level</h2>
+          <div class="grid grid-cols-2 gap-2">
+            <button
+              id="btnChapter"
+              class="px-3 py-2 rounded border border-blue-700 text-blue-700 bg-white"
+            >
+              /api/chapter
+            </button>
+            <button
+              id="btnChapterVerses"
+              class="px-3 py-2 rounded border border-blue-700 text-blue-700 bg-white"
+            >
+              /api/chapter/verses
+            </button>
+            <button
+              id="btnRange"
+              class="px-3 py-2 rounded border border-blue-700 text-blue-700 bg-white"
+            >
+              /api/range
+            </button>
+          </div>
+        </section>
+
+        <!-- Verse-level -->
+        <section class="space-y-2">
+          <h2 class="text-xs font-semibold uppercase tracking-wide text-gray-600">Verse-level</h2>
+          <div class="grid grid-cols-2 gap-2">
+            <button
+              id="btnRandom"
+              class="px-3 py-2 rounded border border-blue-700 text-blue-700 bg-white"
+            >
+              /api/verse/random
+            </button>
+            <button
+              id="btnVerse"
+              class="px-3 py-2 rounded border border-blue-700 text-blue-700 bg-white"
+              title="Uses book, chapter, and verse inputs"
+            >
+              /api/verse
+            </button>
+          </div>
+        </section>
+
+        <!-- Search -->
+        <section class="space-y-2">
+          <h2 class="text-xs font-semibold uppercase tracking-wide text-gray-600">Search</h2>
+          <button
+            id="btnSearch"
+            class="w-full px-3 py-2 rounded border border-blue-700 text-blue-700 bg-white"
+          >
+            /api/search
+          </button>
+        </section>
+      </nav>
+
+      <!-- Right column: fills remaining width; scrolls independently -->
+      <main class="flex-1 p-4 overflow-y-auto bg-purple-200 min-h-0">
+        <pre
+          id="out"
+          class="m-0 rounded border border-gray-300 bg-white p-3 font-mono text-sm whitespace-pre-wrap break-words"
+        >
+            { "hint": "Click a button to call the API. On load we fetch /api/health and /api/books." }
+        </pre>
+      </main>
+    </div>
+  </body>
+</html>
