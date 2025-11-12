@@ -77,9 +77,20 @@
     if (book) params.book = book;
     if (ch) params.chapter = ch;
     var resp = xhrJSON("GET", "/api/verse/random" + toQuery(params));
-    console.log(resp);
-    show(resp);
+    out.textContent = (displayVerse(resp));
   }
+
+  function loadChapter() {
+    var book = currentBook(); 
+    var ch = currentChapter();
+    console.log(book,ch);
+    if (!book || !ch) {
+        return show({ ok: false, error: "Please select a book and enter a chapter number." });
+      }
+    var resp = xhrJSON("GET", "/api/chapter" + toQuery({ book: book, chapter: ch }));
+    out.textContent = displayChapter(resp);
+  }
+  
 
   // ---------- populate selects ----------
   function populateBooks(items) {
@@ -94,9 +105,53 @@
     }
   }
 
+
+  function displayChapter(chapter) {
+    if(!chapter || !chapter.ok) {
+      out.textContent = chapter.error || "Error loading chapter";
+      return;
+    }
+
+    if (!chapter.verses || !Array.isArray(chapter.verses)) {
+      out.textContent = "No verses found";
+      return;
+    }
+
+    var content = chapter.book + " " + chapter.chapter + "\n\n";
+
+    for(let i = 1; i < chapter.verses.length + 1; i++) {
+      let verse = chapter.verses[i-1].trim();
+      if(verse) {
+        content += i + ". " + verse + "\n\n";
+      }
+    }
+    return content;
+  }
+
+
+  function displayVerse(data) {
+    if(!data || !data.ok) {
+      return data.error || "Error loading verse";
+    }
+
+    if (!data.text) {
+      out.textContent = "No verse text found";
+      return;
+    }
+
+  
+
+    var content = data.book + " " + data.chapter + ":" + data.verse + "\n\n" + data.text;
+
+    return content;
+
+  }
+
   // ---------- wire UI ----------
   function wire() {
     el("btnRandom").addEventListener("click", randomVerse);
+
+    el("load").addEventListener("click",loadChapter);
 
     // TODO students:
     // - Add buttons/inputs and hook them to:
