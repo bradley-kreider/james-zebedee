@@ -62,6 +62,10 @@
     return Number(el("verseInp").value || 0);
   }
 
+  function currentQuery() {
+    return el("searchInp").value || "";
+  }
+
   // ---------- example actions ----------
   function loadHealth() {
     show(xhrJSON("GET", "/api/health"));
@@ -167,11 +171,47 @@
 
   }
 
+  function displaySearch(data) {
+    if(!data || !data.ok) {
+      return show({ ok: false, error: data.error || "Search failed" });
+    }
+
+    if (!data.items || data.items.length === 0) {
+      out.textContent = "No results found for: " + data.q;
+      return;
+    }
+
+    let content = "Search results for '" + data.q + "' (" + data.count + " found):\n\n";
+  
+    for (let i = 0; i < data.items.length; i++) {
+      let item = data.items[i];
+      content += item.book + " " + item.chapter + ":" + item.verse + "\n";
+      content += item.text + "\n\n";
+    }
+  
+    out.textContent = content;
+  }
+
+  function search() {
+    let query = currentQuery();
+
+    if(!query) {
+      return(show({ok: false, error: "No query provided"}));
+    }
+
+    let params = {q: query};
+    var resp = xhrJSON("GET", "/api/search" + toQuery(params));
+    displaySearch(resp);
+
+  }
+
   // ---------- wire UI ----------
   function wire() {
     el("btnRandom").addEventListener("click", randomVerse);
 
     el("load").addEventListener("click", loadChapter);
+
+    el("btnSearch").addEventListener("click", search)
 
     // TODO students:
     // - Add buttons/inputs and hook them to:
