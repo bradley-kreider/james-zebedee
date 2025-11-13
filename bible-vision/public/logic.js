@@ -58,6 +58,10 @@
     return Number(el("chapterInp").value || 0);
   }
 
+  function currentVerse() {
+    return Number(el("verseInp").value || 0);
+  }
+
   // ---------- example actions ----------
   function loadHealth() {
     show(xhrJSON("GET", "/api/health"));
@@ -87,10 +91,28 @@
     if (!book || !ch) {
         return show({ ok: false, error: "Please select a book and enter a chapter number." });
       }
-    var resp = xhrJSON("GET", "/api/chapter" + toQuery({ book: book, chapter: ch }));
-    out.textContent = displayChapter(resp);
+    if(currentVerse()) {
+      loadVerse();
+    } else {
+      var resp = xhrJSON("GET", "/api/chapter" + toQuery({ book: book, chapter: ch }));
+      out.textContent = displayChapter(resp);
+    }
   }
   
+  function loadVerse() {
+    var book = currentBook();
+    var ch = currentChapter();
+    var verse = currentVerse();
+    console.log(book,ch,verse);
+
+    if(!book || !ch || !verse) {
+      return show({ ok: false, error: "Please select a book and enter a chapter number and verse." });
+    }
+
+    var resp = xhrJSON("GET", "/api/verse" + toQuery({ book: book, chapter: ch, verse: verse }));
+    out.textContent = displayVerse(resp);
+  }
+
 
   // ---------- populate selects ----------
   function populateBooks(items) {
@@ -119,10 +141,10 @@
 
     var content = chapter.book + " " + chapter.chapter + "\n\n";
 
-    for(let i = 1; i < chapter.verses.length + 1; i++) {
-      let verse = chapter.verses[i-1].trim();
+    for(let i = 0; i < chapter.verses.length; i++) {
+      let verse = chapter.verses[i].trim();
       if(verse) {
-        content += i + ". " + verse + "\n\n";
+        content += (i+1) + ". " + verse + "\n\n";
       }
     }
     return content;
@@ -139,8 +161,6 @@
       return;
     }
 
-  
-
     var content = data.book + " " + data.chapter + ":" + data.verse + "\n\n" + data.text;
 
     return content;
@@ -151,7 +171,7 @@
   function wire() {
     el("btnRandom").addEventListener("click", randomVerse);
 
-    el("load").addEventListener("click",loadChapter);
+    el("load").addEventListener("click", loadChapter);
 
     // TODO students:
     // - Add buttons/inputs and hook them to:
@@ -172,3 +192,9 @@
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);
   else boot();
 })();
+
+
+
+
+//todo
+//verse numbers are not matching up correctly (verse 6 is appearing as verse 5)
