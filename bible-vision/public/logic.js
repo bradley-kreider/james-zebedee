@@ -73,7 +73,7 @@
 
   function loadBooks() {
     var resp = xhrJSON("GET", "/api/books");
-    show(resp);
+    // show(resp);
     if (resp && resp.ok && Array.isArray(resp.items)) populateBooks(resp.items);
   }
 
@@ -224,7 +224,7 @@
 
   // ---------- boot ----------
   function boot() {
-    loadHealth(); // show something on first load
+    // loadHealth(); // show something on first load
     loadBooks(); // populate book select
     wire();
   }
