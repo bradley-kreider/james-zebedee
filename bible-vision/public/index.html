@@ -12,6 +12,11 @@
     rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="/logic.js" defer></script>
+  <style>
+    * {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    }
+  </style>
   <script>
     tailwind.config = {
       theme: {
@@ -87,7 +92,8 @@
   </script>
 </head>
 
-<body class="min-h-screen bg-carbon-black text-dust-grey relative">
+<body class="min-h-screen bg-carbon-black text-dust-grey relative"
+  style="font-family: 'Inter', system-ui, -apple-system, sans-serif;">
   <!-- Grainy gradient background -->
   <div class="fixed inset-0 opacity-30 pointer-events-none">
     <div class="absolute inset-0 bg-gradient-to-br from-spicy-paprika-400/20 via-carbon-black to-charcoal-brown"></div>
@@ -205,7 +211,7 @@
           <!-- Content Body - Scrollable -->
           <div class="flex-1 overflow-y-auto p-6">
             <pre id="out"
-              class="m-0 rounded-lg border border-charcoal-brown-300 bg-carbon-black-400/50 p-6 font-mono text-sm whitespace-pre-wrap break-words text-dust-grey-700 leading-relaxed min-h-full"></pre>
+              class="m-0 rounded-lg border border-charcoal-brown-300 bg-carbon-black-400/50 p-8 font-sans text-base whitespace-pre-wrap break-words text-floral-white leading-loose min-h-full"></pre>
           </div>
         </div>
       </div>
@@ -216,13 +222,13 @@
   <footer class="border-t border-charcoal-brown-400 bg-carbon-black/80 backdrop-blur-sm mt-auto relative">
     <div class="max-w-7xl mx-auto px-6 py-6">
       <div class="flex flex-col md:flex-row justify-between items-center gap-3">
-        <!-- <p class="text-xs text-dust-grey-700">
-          Bible Vision © 2025
-        </p> -->
+        <p class="text-xs text-dust-grey-700">
+
+        </p>
         <div class="flex gap-6 text-xs text-dust-grey-700">
-          <!-- <a href="#" class="hover:text-spicy-paprika transition-colors">About</a>
-          <a href="#" class="hover:text-spicy-paprika transition-colors">Help</a>
-          <a href="#" class="hover:text-spicy-paprika transition-colors">API</a> -->
+          <a href="#" class="hover:text-spicy-paprika transition-colors"></a>
+          <a href="#" class="hover:text-spicy-paprika transition-colors"></a>
+          <a href="#" class="hover:text-spicy-paprika transition-colors"></a>
         </div>
       </div>
     </div>
