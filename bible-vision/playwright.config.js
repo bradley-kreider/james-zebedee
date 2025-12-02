@@ -8,7 +8,7 @@ module.exports = defineConfig({
     testMatch: ["**/test_*.js"],
     outputDir: "test-results",
     use: {
-        baseURL: "http://localhost:4004",
+        baseURL: "http://localhost:4101",
         headless: true,
     }
 })

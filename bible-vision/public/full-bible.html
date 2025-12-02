@@ -1,0 +1,163 @@
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Bible Vision</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="favicon.ico" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="/logic.js" defer></script>
+    <script src="/full-bible-logic.js" defer></script>
+    <style>
+        * {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+                    },
+                    colors: {
+                        'floral-white': {
+                            DEFAULT: '#fffcf2',
+                            100: '#634c00',
+                            200: '#c69800',
+                            300: '#ffcd2a',
+                            400: '#ffe48d',
+                            500: '#fffcf2',
+                            600: '#fffcf3',
+                            700: '#fffdf6',
+                            800: '#fffef9',
+                            900: '#fffefc'
+                        },
+                        'dust-grey': {
+                            DEFAULT: '#ccc5b9',
+                            100: '#2d2821',
+                            200: '#5a5141',
+                            300: '#877962',
+                            400: '#ab9f8b',
+                            500: '#ccc5b9',
+                            600: '#d6d0c6',
+                            700: '#e0dcd4',
+                            800: '#eae8e3',
+                            900: '#f5f3f1'
+                        },
+                        'charcoal-brown': {
+                            DEFAULT: '#403d39',
+                            100: '#0d0c0c',
+                            200: '#1a1917',
+                            300: '#272523',
+                            400: '#34312e',
+                            500: '#403d39',
+                            600: '#6a655e',
+                            700: '#928c84',
+                            800: '#b6b2ad',
+                            900: '#dbd9d6'
+                        },
+                        'carbon-black': {
+                            DEFAULT: '#252422',
+                            100: '#070707',
+                            200: '#0f0e0e',
+                            300: '#161615',
+                            400: '#1e1d1b',
+                            500: '#252422',
+                            600: '#53514c',
+                            700: '#807d76',
+                            800: '#aba8a4',
+                            900: '#d5d4d1'
+                        },
+                        'spicy-paprika': {
+                            DEFAULT: '#eb5e28',
+                            100: '#321205',
+                            200: '#652309',
+                            300: '#97350e',
+                            400: '#ca4713',
+                            500: '#eb5e28',
+                            600: '#ef7f53',
+                            700: '#f39f7e',
+                            800: '#f7bfa9',
+                            900: '#fbdfd4'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="min-h-screen bg-carbon-black text-dust-grey relative"
+    style="font-family: 'Inter', system-ui, -apple-system, sans-serif;">
+    <!-- Grainy gradient background -->
+    <div class="fixed inset-0 opacity-30 pointer-events-none">
+        <div class="absolute inset-0 bg-gradient-to-br from-spicy-paprika-400/20 via-carbon-black to-charcoal-brown">
+        </div>
+        <div class="absolute inset-0"
+            style="background-image: url('data:image/svg+xml,%3Csvg viewBox=%220 0 400 400%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%223.5%22 numOctaves=%224%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E'); opacity: 0.5;">
+        </div>
+    </div>
+
+<header class="border-b border-charcoal-brown-400 bg-carbon-black/80 backdrop-blur-sm sticky top-0 z-50 relative">
+    <div class="max-w-7xl mx-auto px-6 py-5">
+        <div class="flex items-center justify-between">
+            <div>
+                <h1 class="text-2xl font-bold text-floral-white tracking-tight">Bible Vision</h1>
+                <p class="text-sm text-dust-grey-600 mt-0.5">Explore scripture</p>
+            </div>
+            <button id="prevBtn">◄ Previous</button>
+            <span id="location">[Placeholder]</span>
+            <button id="nextBtn">Next ►</button>
+            <div class="flex gap-3">
+                <button id="homepage"
+                    class="px-4 py-2 rounded-lg bg-spicy-paprika text-white text-sm font-medium hover:bg-spicy-paprika-600 transition-all duration-200">
+                    Return to Homepage
+                </button>
+            </div>
+        </div>  
+    </div>
+</header>
+
+<!-- Main Content Area - Prominent Display -->
+<div class="max-w-7xl mx-auto px-6 py-8">
+    <div class="bg-charcoal-brown-400/30 rounded-xl border border-charcoal-brown-400 backdrop-blur-sm overflow-hidden h-[calc(100vh-200px)] flex flex-col">
+        <!-- Content Header -->
+        <div class="border-b border-charcoal-brown-400 bg-carbon-black/50 px-6 py-3 flex-none">
+            <h2 class="text-sm font-semibold text-floral-white">Scripture Display</h2>
+        </div>
+
+        <!-- Content Body - Scrollable -->
+        <div class="flex-1 overflow-y-auto p-6">
+            <pre id="out"
+                class="m-0 rounded-lg border border-charcoal-brown-300 bg-carbon-black-400/50 p-8 font-sans text-base whitespace-pre-wrap break-words text-floral-white leading-loose min-h-full"></pre>
+        </div>
+    </div>
+</div>
+
+
+<!-- Footer -->
+<footer class="border-t border-charcoal-brown-400 bg-carbon-black/80 backdrop-blur-sm mt-auto relative">
+    <div class="max-w-7xl mx-auto px-6 py-6">
+        <div class="flex flex-col md:flex-row justify-between items-center gap-3">
+            <p class="text-xs text-dust-grey-700">
+
+            </p>
+            <div class="flex gap-6 text-xs text-dust-grey-700">
+                <a href="#" class="hover:text-spicy-paprika transition-colors"></a>
+                <a href="#" class="hover:text-spicy-paprika transition-colors"></a>
+                <a href="#" class="hover:text-spicy-paprika transition-colors"></a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+</body>
+
+
+
+
+</html>

@@ -50,6 +50,9 @@
     }
   }
 
+  window.xhrJSON = xhrJSON;
+  window.toQuery = toQuery;
+
   // ---------- current inputs ----------
   function currentBook() {
     return el("bookSel").value || "";
@@ -205,21 +208,29 @@
 
   }
 
-  // ---------- wire UI ----------
+  function loadFullBible() {
+    window.location.href = "/full-bible.html";
+  }
+
+  function homepage() {
+    window.location.href = "/index.html";
+  }
+
+  
+
+  // ---------- wire UI ---------- 
   function wire() {
     el("btnRandom").addEventListener("click", randomVerse);
 
     el("load").addEventListener("click", loadChapter);
 
-    el("btnSearch").addEventListener("click", search)
+    el("btnSearch").addEventListener("click", search);
 
-    // TODO students:
-    // - Add buttons/inputs and hook them to:
-    //   - /api/chapter?book=CODE&chapter=N
-    //   - /api/chapter/verses?book=CODE&chapter=N
-    //   - /api/search?q=term&book=CODE&limit=25
-    //   - /api/range?book=CODE&from=A&to=B
-    //   - /api/files, /api/stats, /api/book/meta, /api/book/chapters
+    el("loadbible").addEventListener("click", loadFullBible);
+
+    el("return").addEventListener("click", homepage);
+
+   
   }
 
   // ---------- boot ----------

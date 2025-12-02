@@ -35,7 +35,6 @@ const http = require("http");
 const url = require("url");
 const fs = require("fs");
 const path = require("path");
-const crypto = require("crypto");
 
 /* =============================== config =============================== */
 
@@ -206,16 +205,28 @@ function apiHealth(res) {
 
 /**
  * 2) /api/books
- * List available book codes with chapter counts.
+ * List available book codes with chapter counts in biblical order.
  */
 function apiBooks(res) {
   const idx = indexBooks();
-  const items = Object.keys(idx)
-    .sort()
-    .map((code) => ({
-      book: code,
-      chapters: idx[code].chapters.length,
-    }));
+  const files = listChapterFiles(); // Already sorted by filename (002_GEN_01.txt, 003_EXO_01.txt, etc.)
+  const seen = new Set();
+  const items = [];
+  
+  // Extract books in the order they appear in sorted filenames
+  for (const f of files) {
+    const m = FILE_RE.exec(f);
+    if (!m) continue;
+    const book = m[2];
+    if (!seen.has(book)) {
+      seen.add(book);
+      items.push({
+        book: book,
+        chapters: idx[book].chapters.length,
+      });
+    }
+  }
+  
   sendJSON(res, 200, { ok: true, items });
 }
 
@@ -600,7 +611,7 @@ const server = http.createServer((req, res) => {
     if (p === "/api/files") return apiFiles(res);
     if (p === "/api/stats") return apiStats(res);
     if (p === "/api/range") return apiRange(res, u.query);
-    if (p === "/api/locate") return apiLocate(res, u.query);
+    // if (p === "/api/locate") return apiLocate(res, u.query);
     if (p === "/api/verse") return apiVerse(res, u.query);
 
     // Static for index.html, logic.js, style.css
