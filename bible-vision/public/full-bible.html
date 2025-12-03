@@ -1,7 +1,9 @@
+<!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8" />
-    <title>Bible Vision</title>
+    <title>Bible Vision - Read</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" href="favicon.ico" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -14,6 +16,221 @@
     <style>
         * {
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+
+        .book-container {
+            perspective: 2500px;
+            perspective-origin: center;
+        }
+
+        .book {
+            transform-style: preserve-3d;
+            position: relative;
+        }
+
+        .book-page {
+            backface-visibility: hidden;
+            transform-style: preserve-3d;
+        }
+
+        .book-page-left {
+            transform-origin: right center;
+            z-index: 1;
+        }
+
+        .book-page-right {
+            transform-origin: left center;
+            z-index: 2;
+        }
+
+        /* Page flip overlay for realistic effect */
+        .book-page::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to right, rgba(0, 0, 0, 0.1) 0%, transparent 10%);
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        /* Next page animation - right page flips */
+        @keyframes pageFlipNext {
+            0% {
+                transform: rotateY(0deg);
+                z-index: 2;
+            }
+
+            50% {
+                transform: rotateY(-90deg);
+                z-index: 2;
+            }
+
+            51% {
+                transform: rotateY(-90deg);
+                z-index: 0;
+            }
+
+            100% {
+                transform: rotateY(-180deg);
+                z-index: 0;
+            }
+        }
+
+        /* Previous page animation - left page flips back */
+        @keyframes pageFlipPrev {
+            0% {
+                transform: rotateY(0deg);
+                z-index: 1;
+            }
+
+            50% {
+                transform: rotateY(90deg);
+                z-index: 3;
+            }
+
+            51% {
+                transform: rotateY(90deg);
+                z-index: 3;
+            }
+
+            100% {
+                transform: rotateY(180deg);
+                z-index: 3;
+            }
+        }
+
+        /* Shadow animation during flip */
+        @keyframes shadowNext {
+
+            0%,
+            100% {
+                box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            }
+
+            50% {
+                box-shadow: -20px 0 40px rgba(0, 0, 0, 0.6);
+            }
+        }
+
+        @keyframes shadowPrev {
+
+            0%,
+            100% {
+                box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            }
+
+            50% {
+                box-shadow: 20px 0 40px rgba(0, 0, 0, 0.6);
+            }
+        }
+
+        /* Content fade during flip */
+        @keyframes fadeOut {
+            0% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0;
+            }
+
+            100% {
+                opacity: 0;
+            }
+        }
+
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+            }
+
+            50% {
+                opacity: 0;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        /* Apply animations */
+        .turning-next .book-page-right {
+            animation: pageFlipNext 1s ease-in-out forwards, shadowNext 1s ease-in-out;
+        }
+
+        .turning-next .book-page-right .book-page-content {
+            animation: fadeOut 1s ease-in-out forwards;
+        }
+
+        .turning-next .book-page-left .book-page-content {
+            animation: fadeIn 1s ease-in-out forwards;
+        }
+
+        .turning-prev .book-page-left {
+            animation: pageFlipPrev 1s ease-in-out forwards, shadowPrev 1s ease-in-out;
+        }
+
+        .turning-prev .book-page-left .book-page-content {
+            animation: fadeOut 1s ease-in-out forwards;
+        }
+
+        .turning-prev .book-page-right .book-page-content {
+            animation: fadeIn 1s ease-in-out forwards;
+        }
+
+        .verse-number {
+            font-size: 0.75rem;
+            vertical-align: super;
+            margin-right: 0.25rem;
+        }
+
+        /* Custom scrollbar */
+        .book-page::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .book-page::-webkit-scrollbar-track {
+            background: rgba(204, 197, 185, 0.2);
+            border-radius: 4px;
+        }
+
+        .book-page::-webkit-scrollbar-thumb {
+            background: #eb5e28;
+            border-radius: 4px;
+        }
+
+        .book-page::-webkit-scrollbar-thumb:hover {
+            background: #ca4713;
+        }
+
+        /* Mobile: simple fade instead of 3D */
+        @media (max-width: 1024px) {
+
+            .turning-next .book-page-right,
+            .turning-prev .book-page-left {
+                animation: none !important;
+            }
+
+            .turning-next .book-page-content,
+            .turning-prev .book-page-content {
+                animation: simpleFade 0.5s ease-in-out !important;
+            }
+
+            @keyframes simpleFade {
+
+                0%,
+                100% {
+                    opacity: 1;
+                }
+
+                50% {
+                    opacity: 0;
+                }
+            }
         }
     </style>
     <script>
@@ -91,73 +308,74 @@
     </script>
 </head>
 
-<body class="min-h-screen bg-carbon-black text-dust-grey relative"
-    style="font-family: 'Inter', system-ui, -apple-system, sans-serif;">
+<body class="min-h-screen bg-carbon-black text-dust-grey relative">
     <!-- Grainy gradient background -->
     <div class="fixed inset-0 opacity-30 pointer-events-none">
         <div class="absolute inset-0 bg-gradient-to-br from-spicy-paprika-400/20 via-carbon-black to-charcoal-brown">
         </div>
-        <div class="absolute inset-0"
-            style="background-image: url('data:image/svg+xml,%3Csvg viewBox=%220 0 400 400%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%223.5%22 numOctaves=%224%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E'); opacity: 0.5;">
+        <div class="absolute inset-0 opacity-50"
+            style="background-image: url('data:image/svg+xml,%3Csvg viewBox=%220 0 400 400%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%223.5%22 numOctaves=%224%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E');">
         </div>
     </div>
 
-<header class="border-b border-charcoal-brown-400 bg-carbon-black/80 backdrop-blur-sm sticky top-0 z-50 relative">
-    <div class="max-w-7xl mx-auto px-6 py-5">
-        <div class="flex items-center justify-between">
-            <div>
-                <h1 class="text-2xl font-bold text-floral-white tracking-tight">Bible Vision</h1>
-                <p class="text-sm text-dust-grey-600 mt-0.5">Explore scripture</p>
-            </div>
-            <button id="prevBtn">◄ Previous</button>
-            <span id="location">[Placeholder]</span>
-            <button id="nextBtn">Next ►</button>
-            <div class="flex gap-3">
+    <header class="border-b border-charcoal-brown-400 bg-carbon-black/80 backdrop-blur-sm sticky top-0 z-50 relative">
+        <div class="max-w-7xl mx-auto px-6 py-5">
+            <div class="flex items-center justify-between flex-wrap gap-4">
+                <div>
+                    <h1 class="text-2xl font-bold text-floral-white tracking-tight">Bible Vision</h1>
+                    <p class="text-sm text-dust-grey-600 mt-0.5">Read Scripture</p>
+                </div>
+                <div class="flex items-center gap-4">
+                    <button id="prevBtn"
+                        class="px-4 py-2 rounded-lg bg-charcoal-brown text-floral-white text-sm font-medium hover:bg-charcoal-brown-600 transition-all duration-200">
+                        ◄ Previous
+                    </button>
+                    <span id="location" class="text-floral-white font-semibold text-lg">[Loading...]</span>
+                    <button id="nextBtn"
+                        class="px-4 py-2 rounded-lg bg-charcoal-brown text-floral-white text-sm font-medium hover:bg-charcoal-brown-600 transition-all duration-200">
+                        Next ►
+                    </button>
+                </div>
                 <button id="homepage"
                     class="px-4 py-2 rounded-lg bg-spicy-paprika text-white text-sm font-medium hover:bg-spicy-paprika-600 transition-all duration-200">
                     Return to Homepage
                 </button>
             </div>
-        </div>  
-    </div>
-</header>
-
-<!-- Main Content Area - Prominent Display -->
-<div class="max-w-7xl mx-auto px-6 py-8">
-    <div class="bg-charcoal-brown-400/30 rounded-xl border border-charcoal-brown-400 backdrop-blur-sm overflow-hidden h-[calc(100vh-200px)] flex flex-col">
-        <!-- Content Header -->
-        <div class="border-b border-charcoal-brown-400 bg-carbon-black/50 px-6 py-3 flex-none">
-            <h2 class="text-sm font-semibold text-floral-white">Scripture Display</h2>
         </div>
+    </header>
 
-        <!-- Content Body - Scrollable -->
-        <div class="flex-1 overflow-y-auto p-6">
-            <pre id="out"
-                class="m-0 rounded-lg border border-charcoal-brown-300 bg-carbon-black-400/50 p-8 font-sans text-base whitespace-pre-wrap break-words text-floral-white leading-loose min-h-full"></pre>
-        </div>
-    </div>
-</div>
+    <!-- Book Layout -->
+    <div class="book-container flex justify-center items-center p-8 relative">
+        <div id="book"
+            class="book grid lg:grid-cols-2 grid-cols-1 gap-0 max-w-[1200px] w-full rounded-lg shadow-2xl min-h-[700px] relative bg-gradient-to-r from-dust-grey-100 via-carbon-black to-dust-grey-100">
+            <!-- Left Page -->
+            <div
+                class="book-page book-page-left bg-floral-white relative overflow-y-auto max-h-[700px] lg:rounded-l-lg lg:rounded-r-none rounded-t-lg lg:rounded-t-lg">
+                <div class="p-12">
+                    <div id="leftPage"
+                        class="book-page-content text-carbon-black text-base leading-relaxed text-justify"></div>
+                </div>
+            </div>
 
-
-<!-- Footer -->
-<footer class="border-t border-charcoal-brown-400 bg-carbon-black/80 backdrop-blur-sm mt-auto relative">
-    <div class="max-w-7xl mx-auto px-6 py-6">
-        <div class="flex flex-col md:flex-row justify-between items-center gap-3">
-            <p class="text-xs text-dust-grey-700">
-
-            </p>
-            <div class="flex gap-6 text-xs text-dust-grey-700">
-                <a href="#" class="hover:text-spicy-paprika transition-colors"></a>
-                <a href="#" class="hover:text-spicy-paprika transition-colors"></a>
-                <a href="#" class="hover:text-spicy-paprika transition-colors"></a>
+            <!-- Right Page -->
+            <div
+                class="book-page book-page-right bg-floral-white relative overflow-y-auto max-h-[700px] lg:rounded-r-lg lg:rounded-l-none rounded-b-lg lg:rounded-b-lg">
+                <div class="p-12">
+                    <div id="rightPage"
+                        class="book-page-content text-carbon-black text-base leading-relaxed text-justify"></div>
+                </div>
             </div>
         </div>
     </div>
-</footer>
+
+    <!-- Footer -->
+    <footer class="border-t border-charcoal-brown-400 bg-carbon-black/80 backdrop-blur-sm mt-auto relative">
+        <div class="max-w-7xl mx-auto px-6 py-6">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-3">
+            </div>
+        </div>
+    </footer>
 
 </body>
-
-
-
 
 </html>
