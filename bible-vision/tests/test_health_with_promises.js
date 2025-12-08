@@ -93,9 +93,9 @@ async function doubleAfterShortDelay(n) {
  */
 function sumSquaresParallel(nums) {
   // TODO Q4:
-    let ary = nums.map((n) => new Promise((resolve,reject) => {
-      wait(5).then(() => resolve(n*n));
-    }))
+  let ary = nums.map((n) => new Promise((resolve,reject) => {
+    wait(5).then(() => resolve(n*n));
+  }))
     
   //   1. Map nums to an array of Promises that:
   //        - wait 5 ms
@@ -155,9 +155,9 @@ function collectSuccessfulValues(promises) {
  *   - Do not swallow errors; let Playwright see failures if the API is broken.
  */
 async function apiHealth(request) {
-  let req = await request.get("/api/health");
-  let content = await response.json();
-  return (content);
+  const response = await request.get("/api/health");
+  const json = await response.json();
+  return (json);
   //i am assuming api is broken?
 }
 
